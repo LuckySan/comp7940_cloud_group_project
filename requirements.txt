@@ -1,0 +1,3 @@
+configparser
+python-telegram-bot>=13.1
+redis
