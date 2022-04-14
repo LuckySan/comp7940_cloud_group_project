@@ -1,3 +1,4 @@
 configparser
 python-telegram-bot>=13.1
 redis
+python-dotenv==0.20.0
