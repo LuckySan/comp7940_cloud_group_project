@@ -1,0 +1,11 @@
+version: '3'
+services:
+  python-chatbot:
+    build: .
+    image: python-chatbot-image
+    container_name: python-chatbot
+    env_file:
+      - .env    
+    #Just
+    # volumes: 
+    #   - "./:/app"

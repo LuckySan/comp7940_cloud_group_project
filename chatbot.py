@@ -1,13 +1,10 @@
-from itertools import count
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
-import configparser
 import logging
-import redis
 
-global redis1
 import os
+import pandas as pd
 
 from connection.GetDataFromCSV import readRecipeData 
 from connection.SQLConnection import SQLConnection 
@@ -18,16 +15,8 @@ load_dotenv()
 # ....
 def main():
     # Load your token and create an Updater for your Bot
-    
-    # config = configparser.ConfigParser()
-    # config.read('config.ini')
     updater = Updater(token=(os.environ['ACCESS_TOKEN']), use_context=True)
-#   updater = Updater(token=(config['TELEGRAM']['ACCESS_TOKEN']), use_context=True)
     dispatcher = updater.dispatcher
-#   dispatcher = updater.dispatcher
-
-    # global redis1
-    # redis1 = redis.Redis(host=(os.environ['HOST']), password=(os.environ['PASSWORD']), port=(os.environ['REDISPORT']))
 
     # You can set this logging module, so you will know when and why things do not work as expected
     logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -68,12 +57,12 @@ def get_amount_of_recipes(update: Update, context: CallbackContext)->None:
     Output: Amount of recipes 
     
     """
-    #1. Load data from .csv-file 
-    df = readRecipeData()
-
-    #2. Count the data 
-    countRecipes = int(df["title"].count())
-    update.message.reply_text(f'Number of recipes in the database: {countRecipes}')
+    with SQLConnection() as conn: 
+        sql = "Select count(*) as numberRecipes from Dishes"
+        data = pd.read_sql(sql, conn.connector)
+        ret = data["numberRecipes"].values[0]
+        countRecipes = int(ret)
+        update.message.reply_text(f'Number of recipes in the database: {countRecipes}')
 
 
     #3 Return result as int 
