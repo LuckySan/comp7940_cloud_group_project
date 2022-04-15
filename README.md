@@ -5,6 +5,11 @@
 - https://recipenlg.cs.put.poznan.pl/dataset 
 
 
+
+## The two modes of the telegram chatbot 
+1. For local development the chatbot uses polling. This has the advantages as no public IP adress is necessary
+2. For the production deployment we use a docker container and a nginx-server to flexibly scale the application
+
 ## How to start the application 
 
 ### Using docker compose: 

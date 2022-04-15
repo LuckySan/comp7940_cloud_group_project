@@ -3,3 +3,4 @@ SERVER=153.23.64.261
 UID=databaseUser1
 DATABASE=animalTable
 PASSWORD=24lsadfadf2er
+MODE=polling

@@ -33,18 +33,44 @@ def main():
     dispatcher.add_handler(CommandHandler("amountRecipes", get_amount_of_recipes))
 
 
+    mode = os.environ["MODE"]
+    print(f'Environment variable is now {mode}')
     # To start the bot:
-    updater.start_polling()
-    updater.idle()
+    if mode == 'webhook':
+        # enable webhook
+        updater.start_webhook(listen="0.0.0.0",
+                            port=3978,
+                            url_path='myTelegramToken')
+        updater.bot.setWebhook('https://example.com/svc/myTelegramToken')
+        print("Now you are on production")
+    else:
+        # enable polling
+        updater.start_polling()
+        updater.idle()
 
 
 def echo(update, context):
-    reply_message = update.message.text.upper()
+    reply_message = f"Chat Id: {get_chat_id(update, context)}   Message: {update.message.text.upper()}"
     logging.info("Update: " + str(update))
     logging.info("context: " + str(context))
     context.bot.send_message(chat_id=update.effective_chat.id, text= reply_message)
 
 
+# This method is used to retrive the chat id 
+def get_chat_id(update, context):
+    chat_id = -1
+
+    if update.message is not None:
+        # text message
+        chat_id = update.message.chat.id
+    elif update.callback_query is not None:
+        # callback message
+        chat_id = update.callback_query.message.chat.id
+    elif update.poll is not None:
+        # answer in Poll
+        chat_id = context.bot_data[update.poll.id]
+
+    return chat_id
 
 # Define a few command handlers. These usually take the two arguments update and
 # context. Error handlers also receive the raised TelegramError object in error.
