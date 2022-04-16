@@ -38,11 +38,19 @@ def main():
     # To start the bot:
     if mode == 'webhook':
         # enable webhook
-        updater.start_webhook(listen="0.0.0.0",
-                            port=3978,
-                            url_path='myTelegramToken')
-        updater.bot.setWebhook('https://example.com/svc/myTelegramToken')
-        print("Now you are on production")
+        updater.start_webhook(listen="127.0.0.1",
+                            port=8443,
+                            url_path=os.environ['ACCESS_TOKEN'],
+                            key ='private.key', 
+                            cert = 'cert.pem',
+                            webhook_url = f'https://{os.environ["DOMAIN"]}.westeurope.azurecontainer.io:8443/{os.environ["ACCESS_TOKEN"]}')
+
+        try: 
+            # updater.bot.setWebhook(f'https://{os.environ["DOMAIN"]}.westeurope.azurecontainer.io:8443/{os.environ["ACCESS_TOKEN"]}')
+            print("The webhook has not been set this time")
+        except:
+            print("Webhook error") 
+
     else:
         # enable polling
         updater.start_polling()

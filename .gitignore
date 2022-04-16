@@ -129,3 +129,12 @@ dmypy.json
 .pyre/
 
 /data/full_dataset.csv
+
+
+/certificate
+
+
+cert.pem 
+
+
+private.key
