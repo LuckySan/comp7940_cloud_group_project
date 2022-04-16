@@ -1,6 +1,0 @@
-ACCESS_TOKEN=516940sdsdf0765:AAF_S5DkjGE6S8n2TvhcTsPpdmvissauA1SM
-SERVER=153.23.64.261
-UID=databaseUser1
-DATABASE=animalTable
-PASSWORD=24lsadfadf2er
-MODE=polling

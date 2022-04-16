@@ -1,20 +1,16 @@
-from telegram import Update
+from telegram import Update, ParseMode
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
-
 import logging
-
 import os
 import pandas as pd
-
 from connection.GetDataFromCSV import readRecipeData 
-from connection.SQLConnection import SQLConnection 
-
-# import configparser
+from connection.SQLConnection import SQLConnection
 from dotenv import load_dotenv
-load_dotenv()
-# ....
+load_dotenv('env.env')
+
 def main():
     # Load your token and create an Updater for your Bot
+    print(os.environ['ACCESS_TOKEN'])
     updater = Updater(token=(os.environ['ACCESS_TOKEN']), use_context=True)
     dispatcher = updater.dispatcher
 
@@ -31,7 +27,7 @@ def main():
     dispatcher.add_handler(CommandHandler("help", help_command))
     dispatcher.add_handler(CommandHandler("hello", hello))
     dispatcher.add_handler(CommandHandler("amountRecipes", get_amount_of_recipes))
-
+    dispatcher.add_handler(CommandHandler("searchKeyWord", get_dishes_of_keyWord))
 
     mode = os.environ["MODE"]
     print(f'Environment variable is now {mode}')
@@ -56,13 +52,47 @@ def main():
         updater.start_polling()
         updater.idle()
 
+def getData(sql):
+    with SQLConnection() as conn:
+        data = pd.read_sql(sql, conn.connector)
+        return data
 
 def echo(update, context):
-    reply_message = f"Chat Id: {get_chat_id(update, context)}   Message: {update.message.text.upper()}"
-    logging.info("Update: " + str(update))
-    logging.info("context: " + str(context))
-    context.bot.send_message(chat_id=update.effective_chat.id, text= reply_message)
+    msg = update.message.text
+    # if the msg is a number, we know our user want to search dish by id
+    if(msg.isdigit()):
+        sql = f"select * from Dishes where id = {msg}"
+        data = getData(sql)
+        title = data["title"].values[0]
+        ingredients = data["ingredients"].values[0]
+        directions = data["directions"].values[0]
+        link = data["link"].values[0]
+        ret = getStringDishByVar(title, ingredients, directions, link)
+        context.bot.send_message(chat_id=update.effective_chat.id, text=ret, parse_mode=ParseMode.HTML)
+    # if the msg is a string, we know our user want to search dish by title
+    else:
+        sql = f"select id,title from Dishes where title like '%{msg}%' limit 0, 50"
+        data = getData(sql)
+        res = getStringDishByIdAndTitle(data)
+        res = "Do you mean these Dishes? \n" + res
+        context.bot.send_message(chat_id=update.effective_chat.id, text = res)
 
+
+# Get All variable of dish
+def getStringDishByVar(title,ingredients,directions,link):
+    ret = f"""
+<b>Dish Title: {title}</b>\n<b>Ingredients:</b>{ingredients}\n<b>Directions:</b>{directions}\n<a href="{link}">{link}</a>
+"""
+    return ret
+
+# Get id, title of dish
+def getStringDishByIdAndTitle(data):
+    retTitle = data["title"].values
+    retId = data["id"].values
+    res = ""
+    for (i, j) in zip(retId, retTitle):
+        res += (str(i) + ". " + j + "\n")
+    return res
 
 # This method is used to retrive the chat id 
 def get_chat_id(update, context):
@@ -83,13 +113,19 @@ def get_chat_id(update, context):
 # Define a few command handlers. These usually take the two arguments update and
 # context. Error handlers also receive the raised TelegramError object in error.
 
+def get_dishes_of_keyWord(update: Update, context: CallbackContext)->None:
+    keyword = context.args[0]
+    with SQLConnection() as conn:
+        sql = f"select Dishes.id,title from KeyWordDish,Dishes where keyword='{keyword}' and Dishes.id = KeyWordDish.dishId limit 0, 50"
+        data = pd.read_sql(sql,conn.connector)
+        res = getStringDishByIdAndTitle(data)
+        update.message.reply_text(res)
 
 
 def get_amount_of_recipes(update: Update, context: CallbackContext)->None: 
     """
     Input: Chatbot /amountRecipes
-    Output: Amount of recipes 
-    
+    Output: Amount of recipes
     """
     with SQLConnection() as conn: 
         sql = "Select count(*) as numberRecipes from Dishes"
@@ -102,7 +138,12 @@ def get_amount_of_recipes(update: Update, context: CallbackContext)->None:
     #3 Return result as int 
 def help_command(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /help is issued."""
-    update.message.reply_text('Helping you helping you.')
+    update.message.reply_text("""
+    
+    /searchKeyWord -> Search the dishes by the ingredient's keyword
+/amountRecipes -> Get the amount of dishes in our database
+    
+    """)
 
 
 def add(update: Update, context: CallbackContext) -> None:
