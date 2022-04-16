@@ -28,7 +28,8 @@ def main():
     dispatcher.add_handler(CommandHandler("hello", hello))
     dispatcher.add_handler(CommandHandler("amountRecipes", get_amount_of_recipes))
     dispatcher.add_handler(CommandHandler("searchKeyWord", get_dishes_of_keyWord))
-
+    dispatcher.add_handler(CommandHandler("addFavorite", add_user_favorite))
+    dispatcher.add_handler(CommandHandler("getMyFavorite", get_user_favorite))
     mode = os.environ["MODE"]
     print(f'Environment variable is now {mode}')
     # To start the bot:
@@ -110,6 +111,23 @@ def get_dishes_of_keyWord(update: Update, context: CallbackContext)->None:
     with SQLConnection() as conn:
         sql = f"select Dishes.id,title from KeyWordDish,Dishes where keyword='{keyword}' and Dishes.id = KeyWordDish.dishId limit 0, 50"
         data = pd.read_sql(sql,conn.connector)
+        res = getStringDishByIdAndTitle(data)
+        update.message.reply_text(res)
+
+
+def add_user_favorite(update: Update, context: CallbackContext)->None:
+    keyword = context.args[0]
+    with SQLConnection() as conn:
+        sql = f"insert into Favorite(clientId,dishId) values('{get_chat_id(update,context)}',{keyword})"
+        conn.cursor.execute(sql)
+        conn.connector.commit()
+        update.message.reply_text("add successfully")
+
+def get_user_favorite(update: Update, context: CallbackContext)->None:
+    clientId = get_chat_id(update, context)
+    with SQLConnection() as conn:
+        sql = f"select d.id, d.title from Favorite f, Dishes d where f.clientId = '{clientId}' and d.id = f.dishId"
+        data = pd.read_sql(sql, conn.connector)
         res = getStringDishByIdAndTitle(data)
         update.message.reply_text(res)
 
