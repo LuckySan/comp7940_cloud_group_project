@@ -8,6 +8,11 @@ from connection.SQLConnection import SQLConnection
 from dotenv import load_dotenv
 load_dotenv()
 
+
+
+# Create a metric to track time spent and requests made.
+
+
 def main():
     # Load your token and create an Updater for your Bot
     print(os.environ['ACCESS_TOKEN'])
@@ -53,6 +58,8 @@ def main():
         updater.start_polling()
         updater.idle()
 
+
+
 def getData(sql):
     with SQLConnection() as conn:
         data = pd.read_sql(sql, conn.connector)
@@ -86,6 +93,8 @@ def getStringDishByVar(title,ingredients,directions,link):
 """
     return ret
 
+
+
 # Get id, title of dish
 def getStringDishByIdAndTitle(data):
     retTitle = data["title"].values
@@ -113,6 +122,9 @@ def get_chat_id(update, context):
 
 # Define a few command handlers. These usually take the two arguments update and
 # context. Error handlers also receive the raised TelegramError object in error.
+
+
+
 
 def get_dishes_of_keyWord(update: Update, context: CallbackContext)->None:
     keyword = context.args[0]
@@ -170,6 +182,7 @@ def help_command(update: Update, context: CallbackContext) -> None:
 /amountRecipes -> Get the amount of dishes in our database
     
     """)
+
 
 def add(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /add is issued."""
