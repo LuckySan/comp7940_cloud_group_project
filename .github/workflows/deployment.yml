@@ -1,6 +1,5 @@
-name: Chatbot_Deployment_Workflow
 on: [push]
-
+name: Chatbot_Deployment_Workflow
 
 jobs:
     build-and-deploy:
@@ -17,7 +16,7 @@ jobs:
             creds: ${{ secrets.AZURE_CREDENTIALS }}
           
         - name: Security vulnerabilities scan
-        uses: aufdenpunkt/python-safety-check@master
+          uses: aufdenpunkt/python-safety-check@master
         
         - uses: azure/docker-login@v1
           with:
