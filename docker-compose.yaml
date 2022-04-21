@@ -11,14 +11,14 @@ services:
       - MODE=webhook
     ports:
         - "8443:8443"
-    #Just
-    # volumes: 
-    #   - "./:/app"
-  # nginx:
-  #   image: nginx:latest
-  #   volumes:
-  #     - ./nginx.conf:/etc/nginx/nginx.conf:ro
-  #   depends_on:
-  #     - petstore
-  #   ports:
-  #     - "4000:4000"
+    Just
+    volumes: 
+      - "./:/app"
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - petstore
+    ports:
+      - "4000:4000"
