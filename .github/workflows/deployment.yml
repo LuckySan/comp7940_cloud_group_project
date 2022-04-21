@@ -24,7 +24,7 @@ jobs:
             login-server: sandroscr.azurecr.io
             username: ${{ secrets.REGISTRY_USERNAME }}
             password: ${{ secrets.REGISTRY_PASSWORD }}
-        - run: |
+        - run:
             docker build . -t sandroscr.azurecr.io/python-chatbot-image:${{ github.sha }}
             docker push sandroscr.azurecr.io/python-chatbot-image:${{ github.sha }}
 
