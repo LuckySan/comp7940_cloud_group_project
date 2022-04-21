@@ -6,7 +6,7 @@ import pandas as pd
 from connection.GetDataFromCSV import readRecipeData 
 from connection.SQLConnection import SQLConnection
 from dotenv import load_dotenv
-load_dotenv('env.env')
+load_dotenv()
 
 def main():
     # Load your token and create an Updater for your Bot
