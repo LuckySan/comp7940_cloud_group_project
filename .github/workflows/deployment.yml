@@ -20,8 +20,9 @@ jobs:
           
         - name: Security vulnerabilities scan
           uses: aufdenpunkt/python-safety-check@master
-        
-        - uses: azure/docker-login@v1
+
+        - name: "Build and push image"
+          uses: azure/docker-login@v1
           with:
             login-server: sandroscr.azurecr.io
             username: ${{ secrets.REGISTRY_USERNAME }}
