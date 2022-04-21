@@ -29,7 +29,7 @@ jobs:
           uses: 'azure/aci-deploy@v1'
           with:
             resource-group: cloud-shell-storage-westeurope
-            dns-name-label: pythonchatbot314
+            dns-name-label: pythonchatbot3140
             image: sandroscr.azurecr.io/python-chatbot-image:${{ github.sha }}
             cpu: 1   #Optional
             memory: 0.1   #Optional
