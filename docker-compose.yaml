@@ -11,9 +11,10 @@ services:
     domainname: "${DOMAIN}"
     ports:
         - "8443:8443"
-    #Just
-    # volumes: 
-    #   - "./:/app"
+        
+  #   Just
+  #   volumes: 
+  #     - "./:/app"
   # nginx:
   #   image: nginx:latest
   #   volumes:

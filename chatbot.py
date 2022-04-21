@@ -154,6 +154,14 @@ def get_amount_of_recipes(update: Update, context: CallbackContext)->None:
 
 
     #3 Return result as int 
+
+def hello(update: Update, context: CallbackContext) -> None:
+    try: 
+        msg = context.args[0]   # /add keyword <-- this should store the keyword
+        update.message.reply_text(f'Good Day {msg}!')
+    except (IndexError): 
+        update.message.reply_text("Default Text3: Good Day Kevin3!")
+
 def help_command(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /help is issued."""
     update.message.reply_text("""
@@ -162,7 +170,6 @@ def help_command(update: Update, context: CallbackContext) -> None:
 /amountRecipes -> Get the amount of dishes in our database
     
     """)
-
 
 def add(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /add is issued."""
@@ -174,15 +181,6 @@ def add(update: Update, context: CallbackContext) -> None:
         update.message.reply_text('You have said ' + msg +  ' for ' + redis1.get(msg).decode('UTF-8') + ' times.')
     except (IndexError, ValueError):
         update.message.reply_text('Usage: /add <keyword>')
-
-
-def hello(update: Update, context: CallbackContext) -> None:
-    try: 
-        msg = context.args[0]   # /add keyword <-- this should store the keyword
-        update.message.reply_text(f'Good Day {msg}!')
-    except (IndexError): 
-        update.message.reply_text("Default Text3: Good Day Kevin3!")
-
 
 if __name__ == '__main__':
     main()
