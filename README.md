@@ -26,3 +26,5 @@
 ## Address of the webbot 
 1. How to check if the webbot is ok: https://api.telegram.org/bot5169407765:AAF_S5DkjGE6S8n2TvhcTsPpd8Vy4zuA1SM/getWebhookInfo
 pythonchatbot.westeurope.azurecontainer.io
+
+2. Test
