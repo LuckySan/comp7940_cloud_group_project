@@ -2,7 +2,7 @@ version: '3'
 services:
   python-chatbot:
     build: .
-    image: sandroscr.azurecr.io/python-chatbot-image
+    image: sandroscr.azurecr.io/python-chatbot-image:latest
     container_name: python-chatbot
     env_file:
       - .env    
