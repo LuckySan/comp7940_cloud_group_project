@@ -7,7 +7,7 @@ services:
     env_file:
       - .env    
     environment: 
-      - MODE=webhook
+      - MODE=polling
     domainname: "${DOMAIN}"
     ports:
         - "8443:8443"
