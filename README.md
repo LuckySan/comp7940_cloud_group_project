@@ -1,6 +1,13 @@
 # comp7940_cloud_group_project
 
 
+## Teammembers: 
+Name   |     Student ID      |    Github  Alias 
+-------------------------------------------------------
+Sandro Falter | 21439664    | LuckySan 
+Luo Xinpeng   | 21444455    | XinpengLuo
+Chen Qia      | 21448957    | JerryQia 
+
 ## Link to the dataset: 
 - https://recipenlg.cs.put.poznan.pl/dataset 
 
